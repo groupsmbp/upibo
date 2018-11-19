@@ -383,6 +383,23 @@ def variant_delete(request, product_pk, variant_pk):
 
 @staff_member_required
 @permission_required('product.manage_products')
+def product_images(request, product_pk):
+    product = get_object_or_404(Product, pk=product_pk)
+    qs = product.images.prefetch_related('images')
+    form = forms.ImagesSelectForm(request.POST or None, product=product)
+    if form.is_valid():
+        form.save()
+        return redirect(
+            'dashboard:product-details', product_pk=product.pk)
+    ctx = {'form': form, 'product': product}
+    return TemplateResponse(
+        request,
+        'dashboard/product/product_image/modal/select_images.html',
+        ctx)
+
+
+@staff_member_required
+@permission_required('product.manage_products')
 def variant_images(request, product_pk, variant_pk):
     product = get_object_or_404(Product, pk=product_pk)
     qs = product.variants.prefetch_related('images')
@@ -427,16 +444,16 @@ def ajax_available_variants_list(request):
     return JsonResponse({'results': variants})
 
 
-@staff_member_required
-@permission_required('product.manage_products')
-def product_images(request, product_pk):
-    products = Product.objects.prefetch_related('images')
-    product = get_object_or_404(products, pk=product_pk)
-    images = product.images.all()
-    ctx = {
-        'product': product, 'images': images, 'is_empty': not images.exists()}
-    return TemplateResponse(
-        request, 'dashboard/product/product_image/list.html', ctx)
+# @staff_member_required
+# @permission_required('product.manage_products')
+# def product_images(request, product_pk):
+#     products = Product.objects.prefetch_related('images')
+#     product = get_object_or_404(products, pk=product_pk)
+#     images = product.images.all()
+#     ctx = {
+#         'product': product, 'images': images, 'is_empty': not images.exists()}
+#     return TemplateResponse(
+#         request, 'dashboard/product/product_image/list.html', ctx)
 
 
 @staff_member_required

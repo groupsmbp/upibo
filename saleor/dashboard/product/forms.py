@@ -15,7 +15,7 @@ from ...core.i18n import VAT_RATE_TYPE_TRANSLATIONS
 from ...core.utils.taxes import DEFAULT_TAX_RATE_NAME, include_taxes_in_prices
 from ...product.models import (
     AttributeChoiceValue, Category, Collection, Product, ProductAttribute,
-    ProductImage, ProductType, ProductVariant, VariantImage)
+    ImageData, ProductImage, ProductType, ProductVariant, VariantImage)
 from ...product.thumbnails import create_product_thumbnails
 from ...product.utils.attributes import get_name_from_attributes
 from ..forms import ModelChoiceOrCreationField, OrderedModelMultipleChoiceField
@@ -364,6 +364,26 @@ class ProductImageForm(forms.ModelForm):
         image = super().save(commit=commit)
         create_product_thumbnails.delay(image.pk)
         return image
+
+
+class ImagesSelectForm(forms.Form):
+    images = forms.ModelMultipleChoiceField(
+        queryset=ProductImage.objects.none(),
+        widget=CheckboxSelectMultiple,
+        required=False)
+
+    def __init__(self, *args, **kwargs):
+        self.product = kwargs.pop('product')
+        super().__init__(*args, **kwargs)
+        self.fields['images'].queryset = ProductImage.objects.all()
+        self.fields['images'].initial = self.product.images.all()
+
+    def save(self):
+        images = []
+        self.product.images.clear()
+        for image in self.cleaned_data['images']:
+            images.append(ProductImage(product=self.product, image=image))
+        ProductImage.objects.bulk_create(images)
 
 
 class VariantImagesSelectForm(forms.Form):

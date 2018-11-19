@@ -112,6 +112,7 @@ class Product(SeoModel):
     available_on = models.DateField(blank=True, null=True)
     is_published = models.BooleanField(default=True)
     attributes = HStoreField(default={}, blank=True)
+    images = models.ManyToManyField('ImageData', through='ProductImage')
     updated_at = models.DateTimeField(auto_now=True, null=True)
     charge_taxes = models.BooleanField(default=True)
     tax_rate = models.CharField(
@@ -376,12 +377,18 @@ class AttributeChoiceValueTranslation(models.Model):
         return self.name
 
 
+class ImageData(models.Model):
+    image = VersatileImageField(
+        upload_to='medias', ppoi_field='ppoi', blank=False)
+    ppoi = PPOIField()
+    
+
 class ProductImage(SortableModel):
     product = models.ForeignKey(
-        Product, related_name='images', on_delete=models.CASCADE)
-    image = VersatileImageField(
-        upload_to='products', ppoi_field='ppoi', blank=False)
-    ppoi = PPOIField()
+        Product, related_name='product_images', on_delete=models.CASCADE)
+    image = models.ForeignKey(
+        ImageData, related_name='product_images', on_delete=models.CASCADE)
+    
     alt = models.CharField(max_length=128, blank=True)
 
     class Meta:
@@ -390,7 +397,6 @@ class ProductImage(SortableModel):
 
     def get_ordering_queryset(self):
         return self.product.images.all()
-
 
 class VariantImage(models.Model):
     variant = models.ForeignKey(

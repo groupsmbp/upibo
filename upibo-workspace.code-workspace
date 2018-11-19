@@ -1,0 +1,19 @@
+{
+	"folders": [
+		{
+			"path": "."
+		},
+		{
+			"path": "D:\\Ha Bui\\Projects\\django-filer"
+		},
+		{
+			"path": "D:\\Ha Bui\\Projects\\django\\upibo\\mysite"
+		},
+		{
+			"path": "D:\\Ha Bui\\Projects\\django\\django-cms"
+		}
+	],
+	"settings": {
+		"python.pythonPath": "virtual-env\\Scripts\\python.exe"
+	}
+}
