@@ -10,6 +10,7 @@ from .menu.urls import urlpatterns as menu_urls
 from .order.urls import urlpatterns as order_urls
 from .page.urls import urlpatterns as page_urls
 from .product.urls import urlpatterns as product_urls
+from .product.urls import galleryurlpatterns as gallery_urls
 from .search.urls import urlpatterns as search_urls
 from .shipping.urls import urlpatterns as shipping_urls
 from .sites.urls import urlpatterns as site_urls
@@ -23,6 +24,7 @@ urlpatterns = [
     url(r'^orders/', include(order_urls)),
     url(r'^page/', include(page_urls)),
     url(r'^products/', include(product_urls)),
+    url(r'^gallery/', include(gallery_urls)),
     url(r'^customers/', include(customer_urls)),
     url(r'^staff/', include(staff_urls)),
     url(r'^discounts/', include(discount_urls)),

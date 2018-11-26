@@ -2,6 +2,22 @@ from django.conf.urls import url
 
 from . import views
 
+galleryurlpatterns = [
+    url(r'^$',
+        views.gallery_list, name='gallery-list'),
+
+    url(r'^add/$',
+        views.gallery_image_create, name='gallery-image-add'),
+    url(r'^(?P<img_pk>[0-9]+)/$',
+        views.gallery_image_edit, name='gallery-image-update'),
+    url(r'^(?P<img_pk>[0-9]+)/delete/$',
+        views.gallery_image_delete, name='gallery-image-delete'),
+    url(r'^reorder/$',
+        views.ajax_reorder_gallery_images, name='gallery-images-reorder'),
+    url(r'^upload/$',
+        views.ajax_gallery_upload_image, name='gallery-images-upload')
+]
+
 urlpatterns = [
     url(r'^$',
         views.product_list, name='product-list'),
@@ -46,8 +62,6 @@ urlpatterns = [
 
     url(r'^(?P<product_pk>[0-9]+)/images/$',
         views.product_images, name='product-images'),
-    # url(r'^(?P<product_pk>[0-9]+)/images/$',
-    #     views.product_images, name='product-image-list'),
     url(r'^(?P<product_pk>[0-9]+)/images/add/$',
         views.product_image_create, name='product-image-add'),
     url(r'^(?P<product_pk>[0-9]+)/images/(?P<img_pk>[0-9]+)/$',

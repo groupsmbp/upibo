@@ -112,11 +112,16 @@
                       {% trans "Categories" context "Dashboard categories list" %}
                     </a>
                   </li>
-                <li class="{% block menu_collections_class %}{% endblock %}">
-                  <a href="{% url 'dashboard:collection-list' %}">
-                    {% trans "Collections" context "Dashboard side navigation link" %}
-                  </a>
-                </li>
+                  <li class="{% block menu_collections_class %}{% endblock %}">
+                    <a href="{% url 'dashboard:collection-list' %}">
+                      {% trans "Collections" context "Dashboard side navigation link" %}
+                    </a>
+                  </li>
+                  <li class="{% block menu_gallery_class %}{% endblock %}">
+                    <a href="{% url 'dashboard:gallery-list' %}">
+                      {% trans "Gallery" context "Dashboard side navigation link" %}
+                    </a>
+                  </li>
               </ul>
             </li>
             {% endif %}

@@ -378,9 +378,27 @@ class AttributeChoiceValueTranslation(models.Model):
 
 
 class ImageData(models.Model):
+    name = models.CharField(
+        'Name',
+        max_length=80
+    )
     image = VersatileImageField(
         upload_to='medias', ppoi_field='ppoi', blank=False)
-    ppoi = PPOIField()
+    height = models.PositiveIntegerField(
+        'Image Height',
+        blank=True,
+        null=True
+    )
+    width = models.PositiveIntegerField(
+        'Image Width',
+        blank=True,
+        null=True
+    )
+    ppoi = PPOIField("Image PPOI")
+
+    class Meta:
+        verbose_name = 'Image Example'
+        verbose_name_plural = 'Image Examples'
     
 
 class ProductImage(SortableModel):

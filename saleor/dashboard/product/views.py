@@ -15,7 +15,7 @@ from ...core.utils import get_paginator_items
 from ...discount.models import Sale
 from ...product.models import (
     AttributeChoiceValue, Product, ProductAttribute, ProductImage, ProductType,
-    ProductVariant)
+    ProductVariant, ImageData)
 from ...product.utils.availability import get_availability
 from ...product.utils.costs import (
     get_margin_for_variant, get_product_costs_data)
@@ -39,6 +39,21 @@ def product_list(request):
         'filter_set': product_filter,
         'is_empty': not product_filter.queryset.exists()}
     return TemplateResponse(request, 'dashboard/product/list.html', ctx)
+
+@staff_member_required
+@permission_required('product.manage_products')
+def gallery_list(request):
+    images = ImageData.objects.all()
+    images = images.order_by('name')
+    image_filter = ProductFilter(request.GET, queryset=images)
+    images = get_paginator_items(
+        image_filter.qs, settings.DASHBOARD_PAGINATE_BY,
+        request.GET.get('page'))
+    ctx = {
+        'images': images,
+        'filter_set': image_filter,
+        'is_empty': not image_filter.queryset.exists()}
+    return TemplateResponse(request, 'dashboard/product/image_list.html', ctx)
 
 
 @staff_member_required
@@ -476,6 +491,25 @@ def product_image_create(request, product_pk):
         'dashboard/product/product_image/form.html',
         ctx)
 
+@staff_member_required
+@permission_required('product.manage_products')
+def gallery_image_create(request):
+    image = ImageData()
+    form = forms.GalleryImageForm(
+        request.POST or None, request.FILES or None, instance=image)
+    if form.is_valid():
+        image = form.save()
+        msg = pgettext_lazy(
+            'Dashboard message',
+            'Added image %s') % (image.name,)
+        messages.success(request, msg)
+        return redirect('dashboard:gallery-list')
+    ctx = {'form': form, 'image': image}
+    return TemplateResponse(
+        request,
+        'dashboard/product/product_image/gallery_form.html',
+        ctx)
+
 
 @staff_member_required
 @permission_required('product.manage_products')
@@ -497,6 +531,25 @@ def product_image_edit(request, product_pk, img_pk):
         'dashboard/product/product_image/form.html',
         ctx)
 
+@staff_member_required
+@permission_required('product.manage_products')
+def gallery_image_edit(request, img_pk):
+    image = get_object_or_404(pk=img_pk)
+    form = forms.GalleryImageForm(
+        request.POST or None, request.FILES or None, instance=image)
+    if form.is_valid():
+        image = form.save()
+        msg = pgettext_lazy(
+            'Dashboard message',
+            'Updated image %s') % (image.name,)
+        messages.success(request, msg)
+        return redirect('dashboard:gallery-list')
+    ctx = {'form': form, 'image': image}
+    return TemplateResponse(
+        request,
+        'dashboard/product/product_image/gallery_form.html',
+        ctx)
+
 
 @staff_member_required
 @permission_required('product.manage_products')
@@ -514,12 +567,40 @@ def product_image_delete(request, product_pk, img_pk):
         'dashboard/product/product_image/modal/confirm_delete.html',
         {'product': product, 'image': image})
 
+@staff_member_required
+@permission_required('product.manage_products')
+def gallery_image_delete(request, img_pk):
+    image = get_object_or_404(pk=img_pk)
+    if request.method == 'POST':
+        image.delete()
+        msg = pgettext_lazy(
+            'Dashboard message', 'Removed image %s') % (image.name,)
+        messages.success(request, msg)
+        return redirect('dashboard:gallery-list')
+    return TemplateResponse(
+        request,
+        'dashboard/product/product_image/modal/gallery_confirm_delete.html',
+        {'image': image})
+
 
 @require_POST
 @staff_member_required
 def ajax_reorder_product_images(request, product_pk):
     product = get_object_or_404(Product, pk=product_pk)
     form = forms.ReorderProductImagesForm(request.POST, instance=product)
+    status = 200
+    ctx = {}
+    if form.is_valid():
+        form.save()
+    elif form.errors:
+        status = 400
+        ctx = {'error': form.errors}
+    return JsonResponse(ctx, status=status)
+
+@require_POST
+@staff_member_required
+def ajax_reorder_gallery_images(request):
+    form = forms.ReorderGalleryImagesForm(request.POST)
     status = 200
     ctx = {}
     if form.is_valid():
@@ -536,6 +617,21 @@ def ajax_upload_image(request, product_pk):
     product = get_object_or_404(Product, pk=product_pk)
     form = forms.UploadImageForm(
         request.POST or None, request.FILES or None, product=product)
+    ctx = {}
+    status = 200
+    if form.is_valid():
+        image = form.save()
+        ctx = {'id': image.pk, 'image': None, 'order': image.sort_order}
+    elif form.errors:
+        status = 400
+        ctx = {'error': form.errors}
+    return JsonResponse(ctx, status=status)
+
+@require_POST
+@staff_member_required
+def ajax_gallery_upload_image(request):
+    form = forms.GalleryUploadImageForm(
+        request.POST or None, request.FILES or None)
     ctx = {}
     status = 200
     if form.is_valid():

@@ -5,7 +5,7 @@ from django_filters import (
     RangeFilter)
 
 from ...core.filters import SortedFilterSet
-from ...product.models import Category, Product, ProductAttribute, ProductType
+from ...product.models import Category, Product, ProductAttribute, ProductType, ImageData
 from ..widgets import MoneyRangeWidget
 
 PRODUCT_SORT_BY_FIELDS = {
@@ -17,6 +17,9 @@ PRODUCT_ATTRIBUTE_SORT_BY_FIELDS = {
 
 PRODUCT_TYPE_SORT_BY_FIELDS = {
     'name': pgettext_lazy('Product type list sorting option', 'name')}
+
+IMAGE_SORT_BY_FIELDS = {
+    'name': pgettext_lazy('Image type list sorting option', 'name')}
 
 PUBLISHED_CHOICES = (
     ('1', pgettext_lazy('Is publish filter choice', 'Published')),
@@ -61,6 +64,28 @@ class ProductFilter(SortedFilterSet):
             'Found %(counter)d matching products',
             number=counter) % {'counter': counter}
 
+
+class ImageFilter(SortedFilterSet):
+    name = CharFilter(
+        label=pgettext_lazy('Image list filter label', 'Name'),
+        lookup_expr='icontains')
+    sort_by = OrderingFilter(
+        label=pgettext_lazy('Image list filter label', 'Sort by'),
+        fields=IMAGE_SORT_BY_FIELDS.keys(),
+        field_labels=IMAGE_SORT_BY_FIELDS)
+
+    class Meta:
+        model = ImageData
+        fields = []
+
+    def get_summary_message(self):
+        counter = self.qs.count()
+        return npgettext(
+            'Number of matching records in the dashboard '
+            'image list',
+            'Found %(counter)d matching attribute',
+            'Found %(counter)d matching attributes',
+            number=counter) % {'counter': counter}
 
 class ProductAttributeFilter(SortedFilterSet):
     name = CharFilter(
