@@ -365,6 +365,23 @@ class ProductImageForm(forms.ModelForm):
         create_product_thumbnails.delay(image.pk)
         return image
 
+class GalleryImageForm(forms.ModelForm):
+    use_required_attribute = False
+
+    class Meta:
+        model = ImageData
+        exclude = ('width', 'height')
+        labels = {'image': pgettext_lazy('Product image', 'Image')}
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        if self.instance.image:
+            self.fields['image'].widget = ImagePreviewWidget()
+
+    def save(self, commit=True):
+        image = super().save(commit=commit)
+        create_gallery_thumbnails.delay(image.pk)
+        return image
 
 class ImagesSelectForm(forms.Form):
     images = forms.ModelMultipleChoiceField(

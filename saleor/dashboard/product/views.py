@@ -534,7 +534,7 @@ def product_image_edit(request, product_pk, img_pk):
 @staff_member_required
 @permission_required('product.manage_products')
 def gallery_image_edit(request, img_pk):
-    image = get_object_or_404(pk=img_pk)
+    image = get_object_or_404(ImageData, pk=img_pk)
     form = forms.GalleryImageForm(
         request.POST or None, request.FILES or None, instance=image)
     if form.is_valid():
@@ -570,7 +570,7 @@ def product_image_delete(request, product_pk, img_pk):
 @staff_member_required
 @permission_required('product.manage_products')
 def gallery_image_delete(request, img_pk):
-    image = get_object_or_404(pk=img_pk)
+    image = get_object_or_404(ImageData, pk=img_pk)
     if request.method == 'POST':
         image.delete()
         msg = pgettext_lazy(
