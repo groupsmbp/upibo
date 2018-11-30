@@ -495,7 +495,7 @@ def product_image_create(request, product_pk):
 @permission_required('product.manage_products')
 def gallery_image_create(request):
     image = ImageData()
-    form = forms.GalleryImageForm(
+    form = forms.GalleryUploadImageForm(
         request.POST or None, request.FILES or None, instance=image)
     if form.is_valid():
         image = form.save()

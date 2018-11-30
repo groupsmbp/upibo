@@ -16,7 +16,7 @@ from ...core.utils.taxes import DEFAULT_TAX_RATE_NAME, include_taxes_in_prices
 from ...product.models import (
     AttributeChoiceValue, Category, Collection, Product, ProductAttribute,
     ImageData, ProductImage, ProductType, ProductVariant, VariantImage)
-from ...product.thumbnails import create_product_thumbnails
+from ...product.thumbnails import create_product_thumbnails, create_gallery_thumbnails
 from ...product.utils.attributes import get_name_from_attributes
 from ..forms import ModelChoiceOrCreationField, OrderedModelMultipleChoiceField
 from ..seo.fields import SeoDescriptionField, SeoTitleField
@@ -488,6 +488,20 @@ class UploadImageForm(forms.ModelForm):
         create_product_thumbnails.delay(image.pk)
         return image
 
+class GalleryUploadImageForm(forms.ModelForm):
+    class Meta:
+        model = ImageData
+        fields = ('image',)
+        labels = {
+            'image': pgettext_lazy('Product image', 'Image')}
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+    def save(self, commit=True):
+        image = super().save(commit=commit)
+        create_gallery_thumbnails.delay(image.pk)
+        return image
 
 class ProductBulkUpdate(forms.Form):
     """Perform one selected bulk action on all selected products."""
