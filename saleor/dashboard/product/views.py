@@ -638,11 +638,18 @@ def ajax_upload_image(request, product_pk):
 def ajax_gallery_upload_image(request):
     form = forms.GalleryUploadImageForm(
         request.POST or None, request.FILES or None)
+
+    if('name' not in form.data):
+        formData = form.data.copy()
+        for filename, file in request.FILES.items():
+            formData['name'] = file.name
+        form.data = formData
+
     ctx = {}
     status = 200
     if form.is_valid():
         image = form.save()
-        ctx = {'id': image.pk, 'image': None, 'order': image.sort_order}
+        ctx = {'id': image.pk, 'image': image.name, 'order': image.sort_order}
     elif form.errors:
         status = 400
         ctx = {'error': form.errors}
