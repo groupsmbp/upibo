@@ -1,5 +1,4 @@
 from datetime import date
-
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import permission_required
@@ -497,6 +496,13 @@ def gallery_image_create(request):
     image = ImageData()
     form = forms.GalleryUploadImageForm(
         request.POST or None, request.FILES or None, instance=image)
+
+    if('name' not in form.data):
+        formData = form.data.copy()
+        for filename, file in request.FILES.items():
+            formData['name'] = file.name
+        form.data = formData
+
     if form.is_valid():
         image = form.save()
         msg = pgettext_lazy(

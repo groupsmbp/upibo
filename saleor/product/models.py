@@ -402,7 +402,7 @@ class ImageData(SortableModel):
         verbose_name_plural = 'Image Examples'
 
     def get_ordering_queryset(self):
-        return self.objects.all()
+        return ImageData.objects.all()
 
 class ProductImage(SortableModel):
     product = models.ForeignKey(
