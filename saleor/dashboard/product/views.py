@@ -405,7 +405,7 @@ def product_images(request, product_pk):
     if form.is_valid():
         form.save()
         return redirect(
-            'dashboard:product-details', product_pk=product.pk)
+            'dashboard:product-details', pk=product.pk)
     ctx = {'form': form, 'product': product}
     return TemplateResponse(
         request,

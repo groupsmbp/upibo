@@ -392,14 +392,14 @@ class ImagesSelectForm(forms.Form):
     def __init__(self, *args, **kwargs):
         self.product = kwargs.pop('product')
         super().__init__(*args, **kwargs)
-        self.fields['images'].queryset = ProductImage.objects.all()
+        self.fields['images'].queryset = ImageData.objects.all()
         self.fields['images'].initial = self.product.images.all()
 
     def save(self):
         images = []
         self.product.images.clear()
         for image in self.cleaned_data['images']:
-            images.append(ProductImage(product=self.product, image=image))
+            images.append(ProductImage(product=self.product, image=image, sort_order=100))
         ProductImage.objects.bulk_create(images)
 
 
