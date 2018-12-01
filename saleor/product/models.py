@@ -400,7 +400,6 @@ class ImageData(models.Model):
         verbose_name = 'Image Example'
         verbose_name_plural = 'Image Examples'
     
-
 class ProductImage(SortableModel):
     product = models.ForeignKey(
         Product, related_name='product_images', on_delete=models.CASCADE)

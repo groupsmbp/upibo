@@ -55,9 +55,9 @@
             <div class="row">
               {{ form.image|materializecss }}
             </div>
-            {% comment %} <div class="row">
-              {{ form.verbose_name|materializecss }}
-            </div> {% endcomment %}
+            <div class="row">
+              {{ form.name|materializecss }}
+            </div>
           </div>
           <div class="card-action right-align">
             <a href="{% url "dashboard:gallery-list" %}" class="btn-flat waves-effect">

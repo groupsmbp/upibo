@@ -45,8 +45,8 @@
                     </div>
                     <div class="card-content">
                       <span class="product-gallery-item-title card-title black-text" title="{{ image.name }}">
-                        {% if image.verbose_name %}
-                          {{ image.verbose_name }}
+                        {% if image.name %}
+                          {{ image.name }}
                         {% else %}
                           <span class="grey-text">
                             {% trans "No description" context "Image card text" %}

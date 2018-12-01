@@ -17,6 +17,7 @@
     <div class="center-align">
       <img class="responsive-img" src="{{ image.image.crop.255x255 }}"  srcset="{{ image.image.crop.255x255 }} 1x, {{ image.image.crop.510x510 }} 2x" alt="">
     </div>
+    <p>{% trans "Image name : " %}{{image.name}}</p>
     <p>{% trans "Are you sure you want to remove image?" context "Modal remove image text" %}</p>
   </div>
 {% endblock content %}
