@@ -487,6 +487,25 @@ class ReorderProductImagesForm(forms.ModelForm):
             image.save()
         return self.instance
 
+class ReorderGalleryImagesForm(forms.ModelForm):
+    ordered_images = OrderedModelMultipleChoiceField(
+        queryset=ImageData.objects.none())
+
+    class Meta:
+        model = ImageData
+        fields = ()
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        if self.instance:
+            self.fields['ordered_images'].queryset = ImageData.objects.all()
+
+    def save(self):
+        for order, image in enumerate(self.cleaned_data['ordered_images']):
+            image.sort_order = order
+            image.save()
+        return self.instance
+
 
 class UploadImageForm(forms.ModelForm):
     class Meta:

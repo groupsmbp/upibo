@@ -2,6 +2,7 @@
 
 {% load i18n %}
 {% load staticfiles %}
+{% load utils %}
 
 {% block title %}
   {% trans "Images" %} - {{ block.super }}
@@ -113,6 +114,9 @@
             </div>
         </li>
       </script>
+    </div>
+    <div class="col s12 l3" id="filters">
+      {% if not is_empty %}{% filters filter_set %}{% endif %}
     </div>
   </div>
 {% endblock %}

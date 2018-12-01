@@ -44,7 +44,7 @@ def product_list(request):
 @permission_required('product.manage_products')
 def gallery_list(request):
     images = ImageData.objects.all()
-    images = images.order_by('name')
+    images = images.order_by('sort_order')
     image_filter = ImageFilter(request.GET, queryset=images)
     images = get_paginator_items(
         image_filter.qs, settings.DASHBOARD_PAGINATE_BY,
