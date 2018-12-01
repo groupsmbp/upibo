@@ -20,7 +20,7 @@ from ...product.utils.availability import get_availability
 from ...product.utils.costs import (
     get_margin_for_variant, get_product_costs_data)
 from ..views import staff_member_required
-from .filters import ProductAttributeFilter, ProductFilter, ProductTypeFilter
+from .filters import ProductAttributeFilter, ProductFilter, ImageFilter, ProductTypeFilter
 
 
 @staff_member_required
@@ -45,7 +45,7 @@ def product_list(request):
 def gallery_list(request):
     images = ImageData.objects.all()
     images = images.order_by('name')
-    image_filter = ProductFilter(request.GET, queryset=images)
+    image_filter = ImageFilter(request.GET, queryset=images)
     images = get_paginator_items(
         image_filter.qs, settings.DASHBOARD_PAGINATE_BY,
         request.GET.get('page'))

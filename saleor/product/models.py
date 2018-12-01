@@ -377,7 +377,7 @@ class AttributeChoiceValueTranslation(models.Model):
         return self.name
 
 
-class ImageData(SortableModel):
+class ImageData(models.Model):
     name = models.CharField(
         'Name',
         max_length=80
@@ -397,10 +397,9 @@ class ImageData(SortableModel):
     ppoi = PPOIField("Image PPOI")
 
     class Meta:
-        ordering = ('sort_order', )
         verbose_name = 'Image Example'
         verbose_name_plural = 'Image Examples'
-    
+
 class ProductImage(SortableModel):
     product = models.ForeignKey(
         Product, related_name='product_images', on_delete=models.CASCADE)

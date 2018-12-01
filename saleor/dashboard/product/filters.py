@@ -64,7 +64,6 @@ class ProductFilter(SortedFilterSet):
             'Found %(counter)d matching products',
             number=counter) % {'counter': counter}
 
-
 class ImageFilter(SortedFilterSet):
     name = CharFilter(
         label=pgettext_lazy('Image list filter label', 'Name'),
