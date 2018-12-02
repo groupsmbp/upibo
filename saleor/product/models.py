@@ -202,7 +202,7 @@ class ProductVariant(models.Model):
     product = models.ForeignKey(
         Product, related_name='variants', on_delete=models.CASCADE)
     attributes = HStoreField(default={}, blank=True)
-    images = models.ManyToManyField('ProductImage', through='VariantImage')
+    images = models.ManyToManyField('ImageData', through='VariantImage')
     track_inventory = models.BooleanField(default=True)
     quantity = models.IntegerField(
         validators=[MinValueValidator(0)], default=Decimal(1))
@@ -424,7 +424,7 @@ class VariantImage(models.Model):
         'ProductVariant', related_name='variant_images',
         on_delete=models.CASCADE)
     image = models.ForeignKey(
-        ProductImage, related_name='variant_images', on_delete=models.CASCADE)
+        ImageData, related_name='variant_images', on_delete=models.CASCADE)
 
 
 class CollectionQuerySet(models.QuerySet):
